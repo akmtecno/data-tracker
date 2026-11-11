@@ -1,0 +1,38 @@
+name: data_usage_tracker
+description: "A modern Flutter application to track and manage mobile & Wi-Fi data usage with local firewall capabilities."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # UI & Design
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.1.0
+  fl_chart: ^0.66.0
+  percent_indicator: ^4.2.3
+
+  # Database & State / Local Storage
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  shared_preferences: ^2.2.2
+
+  # Notifications
+  flutter_local_notifications: ^17.0.0
+
+  # Device & Network Info
+  connectivity_plus: ^5.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
