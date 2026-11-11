@@ -1,0 +1,62 @@
+name: Build Flutter APK & AAB
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK and Android App Bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Locate Project Path
+        run: |
+          DIR=$(find . -name "pubspec.yaml" -exec dirname {} \; | head -n 1)
+          echo "PROJECT_DIR=$DIR" >> $GITHUB_ENV
+          echo "Found project at: $DIR"
+
+      - name: Setup Android Scaffold
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: flutter create --platforms=android .
+
+      - name: Install Dependencies
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: flutter pub get
+
+      - name: Build Release APK
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: flutter build apk --release --no-tree-shake-icons
+
+      - name: Build Google Play Bundle (AAB)
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: flutter build appbundle --release --no-tree-shake-icons
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: '**/build/app/outputs/flutter-apk/app-release.apk'
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: '**/build/app/outputs/bundle/release/app-release.aab'
